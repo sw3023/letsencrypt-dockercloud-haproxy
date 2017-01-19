@@ -19,11 +19,22 @@ mkdir -p /opt/www
 (pushd /opt/www && python -m SimpleHTTPServer 80) &
 
 # Wait for the local server to be listening
-while ! nc -z localhost 80; do echo "SimpleHTTPServer not up yet, waiting 1 second"; sleep 1; done
+while ! nc -z localhost 80;
+do
+  echo "SimpleHTTPServer not up yet, waiting 1 second";
+  sleep 1;
+done
+
+echo "waiting for service \"${LOAD_BALANCER_SERVICE_NAME}\""
 
 # Wait for HAproxy to start before updating certificates on startup.
-while ! nc -z "$LOAD_BALANCER_SERVICE_NAME" 80; do echo "Loadbalancer not up yet, waiting 5 second"; sleep 5; done
+while ! nc -z $LOAD_BALANCER_SERVICE_NAME 80;
+do
+  echo "Loadbalancer service \"${LOAD_BALANCER_SERVICE_NAME}\" is not up yet, waiting 5 second";
+  sleep 5;
+done
 
+echo "Loadbalancer service \"${LOAD_BALANCER_SERVICE_NAME}\" is online, updating certificates..."
 (update-certs.sh) &
 
 exec "$@"
