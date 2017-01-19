@@ -30,6 +30,10 @@ In your stack file:
   * Define an `OPTIONS` environment variable in the `letsencrypt` service, if
     you want to pass additional arguments to `certbot` (e.g. `--staging`).
 
+  * Define an `LOAD_BALANCER_SERVICE_NAME` environment variable in the
+    `letsencrypt` service. It is used to wait for this service to be listening
+    on port 80 before starting the `letsencrypt` service.
+
 Several environment variables are hard coded, and don't need to be defined in
 your stack file:
 
