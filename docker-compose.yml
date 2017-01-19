@@ -2,7 +2,28 @@ version: "2"
 services:
   haproxy:
     build: haproxy
-    image: interaction/haproxy:latest
+    links:
+      - letsencrypt
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes_from:
+      - letsencrypt
   letsencrypt:
     build: letsencrypt
-    image: interaction/letsencrypt:latest
+    environment:
+      - DOMAINS=foo.com,www.foo.com;ba.com,www.bar.com
+      - EMAIL=admins@foo.com
+      - LOAD_BALANCER_SERVICE_NAME=haproxy
+      # THIS IS CRUCIAL when testing to avoid reaching the 5 certificates
+      # limit per domain. You'll end up waiting a week before being able 
+      # to regenerate a valid cert if you don't backup the once generated
+      - OPTIONS=--staging
+    expose:
+      - "80"
+  web:
+    environment:
+      - FORCE_SSL=yes
+      - VIRTUAL_HOST=http://*,https://*
+    image: dockercloud/hello-world:latest
