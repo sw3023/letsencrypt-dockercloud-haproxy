@@ -15,6 +15,7 @@ letsencrypt:
   environment:
     - DOMAINS=foo.com,www.foo.com;bar.com,www.bar.com
     - EMAIL=admins@interaction.net.au
+    - LOAD_BALANCER_SERVICE_NAME=haproxy
     # - OPTIONS=--staging
   expose:
     - "80"
