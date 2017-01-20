@@ -30,6 +30,14 @@ In your stack file:
   * Define an `OPTIONS` environment variable in the `letsencrypt` service, if
     you want to pass additional arguments to `certbot` (e.g. `--staging`).
 
+    ***VERY IMPORTANT***
+
+    Make sure you set the environment variable OPTIONS: --staging on the letsencrypt
+    service  until you are 100% sure you are configured properly and you want to get
+    a real certificate. Otherwise you’ll reache the 5 certificates limit per domain
+    per week and you’ll end up waiting a week before being able to regenerate a valid
+    certificate if you didn’t backup the ones already generated
+
   * Define an `LOAD_BALANCER_SERVICE_NAME` environment variable in the
     `letsencrypt` service. It is used to wait for this service to be listening
     on port 80 before starting the `letsencrypt` service.
