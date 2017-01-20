@@ -1,3 +1,39 @@
+# How to use it
+
+```
+version: "2"
+services:
+  haproxy:
+    image: m21lab/haproxy:1.6.2
+    links:
+      - letsencrypt
+      - web ## THIS IS THE SERVICE HOSTED BEHIND THE NEW CERTIFICATE
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    volumes_from:
+      - letsencrypt
+  letsencrypt:
+    image: m21lab/letsencrypt:1.0
+    environment:
+      - DOMAINS=YOUR_DOMAIN
+      - EMAIL=admins@YOUR_DOMAIN
+      - LOAD_BALANCER_SERVICE_NAME=haproxy
+      # THIS IS CRUCIAL WHEN TESTING to avoid reaching
+      # the 5 certificates limit per domain per week. 
+      # You'll end up waiting a week before being able 
+      # to regenerate a valid cert if you don't backup
+      # the once generated
+      - OPTIONS=--staging
+
+  web:
+    environment:
+      - FORCE_SSL=yes
+      - VIRTUAL_HOST=http://*,https://*
+    image: dockercloud/hello-world:latest
+```
 # Overview
 
 The `haproxy` image will:
