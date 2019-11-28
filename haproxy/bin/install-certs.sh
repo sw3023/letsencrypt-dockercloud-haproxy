@@ -18,7 +18,7 @@ fi
 if [[ -n "$(ls -A $LIVE_CERT_FOLDER)" ]]; then
 	COUNT=0
 	for DIR in "$LIVE_CERT_FOLDER"/*; do
-	    if [ "foo" = "foo" ]; then
+	    if [ "foo" != "README" ]; then
 		cat "$DIR/privkey.pem" "$DIR/fullchain.pem" > /certs/letsencrypt$COUNT.pem
 		(( COUNT += 1 ))
 	    fi
